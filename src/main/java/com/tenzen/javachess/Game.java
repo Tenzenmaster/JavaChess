@@ -4,6 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,11 @@ public class Game extends Group {
     private boolean whiteCanCastleShort = true;
     private boolean blackCanCastleLong = true;
     private boolean blackCanCastleShort = true;
+    private int whiteWins = 0;
+    private int blackWins = 0;
+    private Text winCountText = new Text("White wins: " + whiteWins + "\nBlack wins: " + blackWins);
+    private Text turnText = new Text("White to move");
+    private Text welcomeText = new Text("WELCOME TO KRAZYKHESS");
 
     public Game() {
         resetButton.setLayoutX(1000);
@@ -35,7 +41,15 @@ public class Game extends Group {
         checkmateImageView.setY(120);
         checkmateImageView.setVisible(false);
 
-        getChildren().addAll(board, resetButton, fenField, checkmateImageView);
+        winCountText.setX(1000);
+        winCountText.setY(400);
+
+        turnText.setX(800);
+
+        welcomeText.setX(100);
+        welcomeText.setY(680);
+
+        getChildren().addAll(board, resetButton, fenField, checkmateImageView, winCountText, turnText, welcomeText);
         board.game = this;
     }
 
@@ -48,6 +62,8 @@ public class Game extends Group {
         whiteCanCastleShort = true;
         blackCanCastleLong = true;
         blackCanCastleShort = true;
+
+        turnText.setText("White to move");
     }
 
     public void addHalfTurn(HalfTurn halfTurn) {
@@ -68,11 +84,23 @@ public class Game extends Group {
             if (captured.getKind() == Piece.Kind.KING) {
                 System.out.println("Checkmate!");
                 checkmateImageView.setVisible(true);
+                if (captured.getColor() == Piece.Color.WHITE) {
+                    ++blackWins;
+                } else {
+                    ++whiteWins;
+                }
+                winCountText.setText("White wins: " + whiteWins + "\nBlack wins: " + blackWins);
             }
         }
 
         HalfTurn halfTurn = board.movePiece(from, to);
         addHalfTurn(halfTurn);
+
+        if (turnColor() == Piece.Color.WHITE) {
+            turnText.setText("White to move");
+        } else {
+            turnText.setText("White to move");
+        }
 
         return true;
     }
