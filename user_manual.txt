@@ -1,0 +1,14 @@
+HOW TO PLAY KRAZYKHESS
+
+It's the same as normal chess!*
+Click reset to start a new game.
+Use the FEN editor to set up a custom position
+
+*There are a few differences between KRAZYKHESS and normal chess:
+    - No en passant
+    - No castling
+    - No 50-move rule
+    - No promotion, your punishment for not winning in the middlegame endgame is a draw >:)
+    - Moving into check is legal so be careful!
+    - Capture the enemy king to deliver checkmate
+    - This also means stalemate will result in a win under best play

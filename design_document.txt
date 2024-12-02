@@ -1,0 +1,102 @@
+KRAZYKHESS DESIGN DOCUMENT
+
+class JavaChess {
+    This class only exists for initializing the Game, Scene and Stage.
+    Realistically the Game class and this one could have been combined,
+    but I wanted to decouple the JavaFX application part from the game logic and visuals.
+}
+
+class Game {
+    This class holds and manages game logic and visuals.
+    It has a Board, some informational text, and some interactive buttons and text fields.
+    It's responsible for keeping track of moves, the current turn, what to do if a move is checkmate, etc.
+    Most game logic happens with calls to the Board.
+}
+
+class Board {
+    This class holds all the squares and pieces.
+    It handles mouse clicks and selections of pieces and squares,
+    piece and square positioning, finding possible moves for any given piece,
+    finding if any piece is on some square, etc.
+    Pieces do not handle their own moves because they need the context of the board and position of pieces
+    to find valid moves. A more OOP polymorphism core way to do this would be to have subclasses of Piece
+    that each have their own function that the board could use to find valid moves. However, I think
+    this worked fine and adding more than six pieces was out of the scope of this project.
+    It can also set itself up based on a String of FEN! In short FEN is a notation that
+    can describe a chess position in very few characters and I used it to make quick edits to the
+    position to test things. There was this guy in my workshop who loved String.split so
+    he would like this I think.
+
+    class Square {
+        This is kind of an artifact of how I started this project with the children of the Board
+        knowing their position and other info. But yeah they're just used to display the different
+        colored squares of the board.
+    }
+}
+
+class Piece {
+    This class is a JavaFX ImageView that displays the kind of piece it is.
+    It also has member variables for the color and kind of piece it is.
+    I mildly regret making those variables private and using getters,
+    they should have been public and final. Or not final. The board should be managing when they
+    should ever have to change their color or kind (which they never do since I just create a new piece
+    whenever they move). It only has invariants in the context of the board so the board should
+    uphold them, having the Piece have getColor and getKind was just annoying!!
+    There's also a static method to create a Piece out of a char for use with FEN strings.
+    I don't really know why we don't use factory methods for everything, constructors seem kind of useless.
+
+    enum Kind {
+        The six kinds of piece (pawn, king, etc)
+    }
+
+    enum Color {
+        Black and white
+    }
+}
+
+class Position {
+    I decided to make a class that would uphold its invariants (both member variables
+    being a value from 0 to 7) so that I wouldn't have to check each time, but I never even bothered
+    to catch the exceptions they threw most of the time so this was kind of silly. It represents
+    a single position on the chessboard. In Board.getPieceMoves and the methods it calls, it had some
+    issues since I was trying to use it to add to other Positions which required having negative
+    numbers which were not allowed in the class. It also required that I explicitly make a copy
+    sometimes since I didn't want to affect a Position that had been passed in to some function.
+    Why does Java not let you make classes or structs on the stack :(
+}
+
+class Vec2 {
+    Little class I made to overcome the limitations I put on Position. Mainly negative number support.
+    I made it pretty late so many places still just use two ints.
+}
+
+class Resources {
+    A bunch of images I cache so that I don't have to load them multiple times for multiple instances.
+    I don't actually know if JavaFX caches images so maybe this was useless but whatever.
+    I found out you actually need to wait until JavaFX has initialized to load images so I
+    created an init method to load the images instead of having them be loaded statically
+    at the beginning of the program.
+    You can get a piece image by entering a piece kind and color into one of its methods.
+}
+
+class HalfTurn {
+    Contains some info about a move, such as the start and end position of the moving piece,
+    if the move was a capture, etc. It would be more useful if I went further and implemented
+    en passant, castling, illegal moves into check, and other stuff that requires the context
+    of previous moves to determine the validity of a present move.
+    It's only half of a turn because a full turn requires a move from both black and white.
+}
+
+class Logger {
+    I basically just copied how the rust log crate works. I'm sure that's not the first logger
+    to be designed this way with the variable log levels but idk any other languages' loggers to be honest.
+    It has five different levels, allowing you to filter out messages that don't meet a minimum urgency.
+    I'm not sure if I'm supposed to send everything to System.err or if System.out is okay for logs tbh.
+
+    enum LogLevel {
+        TRACE is the most lenient and allows all log messages to be printed.
+        DEBUG, INFO, WARNING...
+        ERROR is the least lenient and only allows calls to Logger.error or higher to be called
+        (there is nothing higher though).
+    }
+}
