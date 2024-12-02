@@ -9,6 +9,10 @@ public class Position {
         setRank(rank);
     }
 
+    public Position copy() {
+        return new Position(getRank(), getFile());
+    }
+
     public int getRank() {
         return rank;
     }
@@ -27,8 +31,8 @@ public class Position {
         this.rank = rank;
     }
 
-    private void verifyRange(int x) {
-        if (rank < 0 || rank > 7) {
+    private static void verifyRange(int x) {
+        if (x < 0 || x > 7) {
             throw new OutOfBoundsException();
         }
     }

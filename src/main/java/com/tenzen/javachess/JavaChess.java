@@ -15,14 +15,18 @@ import java.io.IOException;
 public class JavaChess extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        Board board = new Board();
-        Image image = new Image(new FileInputStream("res/pieces/black-bishop.png"));
-        ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(64);
-        imageView.setFitWidth(64);
-        board.getChildren().add(imageView);
+        Resources.init();
 
-        Scene scene = new Scene(board);
+        Game game = new Game();
+        game.setup();
+
+        //dbg
+        game.board.setPiece(new Position(5, 6), new Piece(Piece.Kind.KNIGHT, Piece.Color.BLACK));
+        for (Position pos : game.board.getPieceMoves(new Position(6, 5))) {
+            Logger.debug("Available move: " + pos.toString());
+        }
+
+        Scene scene = new Scene(game);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.setWidth(1280);
@@ -31,7 +35,7 @@ public class JavaChess extends Application {
     }
 
     public static void main(String[] args) {
-        Logger.logLevel = Logger.LogLevel.TRACE;
+        Logger.logLevel = Logger.LogLevel.DEBUG;
         launch();
     }
 }
