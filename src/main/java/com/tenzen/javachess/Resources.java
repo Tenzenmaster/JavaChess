@@ -20,6 +20,8 @@ public class Resources {
     private static Image whiteQueenImage;
     private static Image whiteRookImage;
 
+    private static Image checkmateImage;
+
     public static void init() throws FileNotFoundException {
         blackBishopImage = new Image(new FileInputStream("res/pieces/black-bishop.png"));
         blackKingImage = new Image(new FileInputStream("res/pieces/black-king.png"));
@@ -34,6 +36,12 @@ public class Resources {
         whitePawnImage = new Image(new FileInputStream("res/pieces/white-pawn.png"));
         whiteQueenImage = new Image(new FileInputStream("res/pieces/white-queen.png"));
         whiteRookImage = new Image(new FileInputStream("res/pieces/white-rook.png"));
+
+        checkmateImage = new Image(new FileInputStream("res/checkmate.jpg"));
+    }
+
+    public static Image getCheckmateImage() {
+        return checkmateImage;
     }
 
     public static Image getImage(Piece.Kind kind, Piece.Color color) {

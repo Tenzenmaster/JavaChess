@@ -113,11 +113,7 @@ public class Board extends Group {
     }
 
     private void handleClick(Position position) {
-        Logger.debug("handleClick: " + position.toString());
         Piece piece = getPiece(position);
-        if (piece != null) {
-            Logger.debug(piece.toString());
-        }
         selectSquare(position);
     }
 
@@ -136,13 +132,25 @@ public class Board extends Group {
     }
 
     private void selectSquare(Position position) {
+        Logger.debug(position.toString() + "is now");
         if (selectedPosition != null) {
             Piece piece = getPiece(selectedPosition);
-            if (piece != null && selectedPosition != position) {
-                HalfTurn halfTurn = movePiece(selectedPosition, position);
-                if (game != null) {
-                    game.addHalfTurn(halfTurn);
+            List<Position> moves = getPieceMoves(selectedPosition);
+            boolean contains = false;
+            for (Position move : moves) {
+                if (move.getRank() == position.getRank() && move.getFile() == position.getFile()) {
+                    contains = true;
                 }
+            }
+
+            for (Position pos : moves) {
+                Logger.debug("Available move: " + pos.toString());
+            }
+
+            if (piece != null && contains) {
+                game.requestPossibleMove(selectedPosition, position);
+            } else {
+                Logger.debug(position.toString() + " not ocntainer");
             }
             deselectAll();
             return;
@@ -313,12 +321,12 @@ public class Board extends Group {
         switch (color) {
             case Piece.Color.BLACK -> {
                 Position oneForward = tryGetMove(start, 0, 1, color);
-                if (oneForward != null) {
+                if (oneForward != null && getPiece(oneForward) == null) {
                     moves.add(oneForward);
                 }
                 if (start.getRank() == 1) {
                     Position twoForward = tryGetMove(start, 0, 2, color);
-                    if (twoForward != null) {
+                    if (twoForward != null && getPiece(twoForward) == null) {
                         moves.add(twoForward);
                     }
                 }
@@ -339,12 +347,12 @@ public class Board extends Group {
             }
             case Piece.Color.WHITE -> {
                 Position oneForward = tryGetMove(start, 0, -1, color);
-                if (oneForward != null) {
+                if (oneForward != null && getPiece(oneForward) == null) {
                     moves.add(oneForward);
                 }
                 if (start.getRank() == 6) {
                     Position twoForward = tryGetMove(start, 0, -2, color);
-                    if (twoForward != null) {
+                    if (twoForward != null && getPiece(twoForward) == null) {
                         moves.add(twoForward);
                     }
                 }

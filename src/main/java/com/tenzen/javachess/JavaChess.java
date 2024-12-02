@@ -20,12 +20,6 @@ public class JavaChess extends Application {
         Game game = new Game();
         game.setup();
 
-        //dbg
-        game.board.setPiece(new Position(5, 6), new Piece(Piece.Kind.KNIGHT, Piece.Color.BLACK));
-        for (Position pos : game.board.getPieceMoves(new Position(6, 5))) {
-            Logger.debug("Available move: " + pos.toString());
-        }
-
         Scene scene = new Scene(game);
         stage.setTitle("Hello!");
         stage.setScene(scene);
